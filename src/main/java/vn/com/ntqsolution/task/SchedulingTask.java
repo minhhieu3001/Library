@@ -25,7 +25,7 @@ public class SchedulingTask {
     @Autowired
     UserService userService;
 
-    @Scheduled(fixedRate = 1000 * 60)
+    @Scheduled(fixedRate = 1000 * 60 * 60* 24)
     public void reportTimeBorrow() throws Exception {
 //        List borrow muon :Scan bang thong tin muon sach
         //check ngày mượn / thời lượng mượn = 0 || < 1 thi delete thông tin để thu hồi sách
