@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.com.ntqsolution.authenticate.Authorized;
+import vn.com.ntqsolution.constant.ResponseCode;
 import vn.com.ntqsolution.domain.Book;
 import vn.com.ntqsolution.exception.BookException;
 import vn.com.ntqsolution.request.BookRequest;
@@ -35,7 +36,11 @@ public class BookController {
     @GetMapping("/books/{id}")
     public ResponseEntity<BaseResponse> getBook(@PathVariable String id) {
         try {
-            return ResponseCreator.createResponseSuccess(bookService.getBook(id));
+            Book book = bookService.getBook(id);
+            if(book == null) {
+                return ResponseCreator.createResponseError(ResponseCode.BOOK_NOT_FOUND, "BOOK NOT FOUND");
+            }
+            return ResponseCreator.createResponseSuccess(book);
         } catch (BookException e) {
             return ResponseCreator.createResponseError(e.getCode(), e.getMessage());
         }

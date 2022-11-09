@@ -61,17 +61,18 @@ public class AuthAspect {
         if (token == null || token.isEmpty()) {
             throw new TokenException("INVALID TOKEN", ResponseCode.INVALID_TOKEN);
         }
+//        if (JwtUtil.isTokenExpired(token)) {
+//            throw new TokenException("TOKEN EXPIRED", ResponseCode.TOKEN_EXPIRED);
+//        }
+
+        System.out.println("+++" + JwtUtil.isTokenExpired(token));
         JwtResponse jwtResponse = JwtUtil.parseToken(token);
-        if (jwtResponse == null) {
-            throw new TokenException("INVALID TOKEN", ResponseCode.INVALID_TOKEN);
-        }
+        System.out.println(jwtResponse);
         String role = jwtResponse.getRole();
         if (!role.equals(authorizeRole)) {
             throw new TokenException("WRONG ROLE", ResponseCode.INVALID_TOKEN);
         }
-        if (JwtUtil.isTokenExpired(token)) {
-            throw new TokenException("TOKEN EXPIRED", ResponseCode.TOKEN_EXPIRED);
-        }
+
     }
 
 }

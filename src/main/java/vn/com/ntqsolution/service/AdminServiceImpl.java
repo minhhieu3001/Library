@@ -52,21 +52,27 @@ public class AdminServiceImpl implements AdminService {
         if (optional.isPresent()) {
             return optional.get();
         }
-        throw new AdminException("Not found Admin", ResponseCode.ADMIN_NOT_FOUND);
+        return null;
     }
 
     @Override
     public Admin editAdmin(AdminRequest adminEdited) {
-        Admin admin = new Admin(adminEdited.getId(), adminEdited.getUsername(),
-                bCryptPasswordEncoder.encode(adminEdited.getPassword()),
-                adminEdited.getEmail(), adminEdited.getRole());
-        adminRepository.save(admin);
-        return admin;
+        Optional<Admin> option = adminRepository.findById(adminEdited.getId());
+        if(option.isPresent()) {
+            Admin admin = new Admin(adminEdited.getId(), adminEdited.getUsername(),
+                    bCryptPasswordEncoder.encode(adminEdited.getPassword()),
+                    adminEdited.getEmail(), adminEdited.getRole());
+            adminRepository.save(admin);
+            return admin;
+        } else throw new AdminException("ADMIN NOT FOUND", ResponseCode.ADMIN_NOT_FOUND);
     }
 
     @Override
     public void deleteAdmin(String id) {
-        adminRepository.deleteById(id);
+        Optional<Admin> admin = adminRepository.findById(id);
+        if(admin.isPresent()) {
+            adminRepository.deleteById(id);
+        } else throw new AdminException("ADMIN NOT FOUND", ResponseCode.ADMIN_NOT_FOUND);
     }
 
     @Override

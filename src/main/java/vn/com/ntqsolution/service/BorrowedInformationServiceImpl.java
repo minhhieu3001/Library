@@ -104,6 +104,9 @@ public class BorrowedInformationServiceImpl implements BorrowedInformationServic
             throw new BorrowInformationException("Borrow Information not found", ResponseCode.BORROWINFORMATION_NOT_FOUND);
         }
         User user = userService.getUser(borrowRequest.getUserId());
+        if(user == null) {
+            throw new BorrowInformationException("USER NOT FOUNT", ResponseCode.USER_NOT_FOUND);
+        }
         BorrowedInformation borrowedInformation = new BorrowedInformation(borrowRequest.getId(), borrowRequest.getBookId(),
                 borrowRequest.getUserId(), borrowRequest.getAdminId(), optional.get().getBorrowDate(), borrowRequest.getBorrowTime());
         borrowedInformationRepository.save(borrowedInformation);

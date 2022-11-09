@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
         if (optional.isPresent()) {
             return optional.get();
         }
-        throw new UserException("Not found User", ResponseCode.USER_NOT_FOUND);
+        return null;
     }
 
     @Override
@@ -44,15 +44,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User editUser(UserRequest userRequest) {
-        User user = new User(userRequest.getId(), userRequest.getName(), userRequest.getEmail(),
-                userRequest.getNewestBorrowDate(), userRequest.getBorrowTime());
-        userRepository.save(user);
-        return user;
+        Optional<User> option = userRepository.findById(userRequest.getId());
+        if(option.isPresent()) {
+            User user = new User(userRequest.getId(), userRequest.getName(), userRequest.getEmail(),
+                    userRequest.getNewestBorrowDate(), userRequest.getBorrowTime());
+            userRepository.save(user);
+            return user;
+        } else throw new UserException("USER NOT FOUND", ResponseCode.USER_NOT_FOUND);
     }
 
     @Override
     public void deleteUser(String id) {
-        userRepository.deleteById(id);
+        Optional<User> user = userRepository.findById(id);
+        if(user.isPresent()) {
+            userRepository.deleteById(id);
+        } else throw new UserException("USER NOT FOUND", ResponseCode.USER_NOT_FOUND);
     }
 
     @Override

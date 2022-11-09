@@ -36,7 +36,11 @@ public class UserController {
     @GetMapping("/users/{id}")
     public ResponseEntity<BaseResponse> getUser(@PathVariable String id) {
         try {
-            return ResponseCreator.createResponseSuccess(userService.getUser(id));
+            User user = userService.getUser(id);
+            if(user == null) {
+                return ResponseCreator.createResponseError(ResponseCode.USER_NOT_FOUND, "USER NOT FOUND");
+            }
+            return ResponseCreator.createResponseSuccess(user);
         } catch (Exception e) {
             return ResponseCreator.createResponseError(ResponseCode.USER_NOT_FOUND, e.getMessage());
         }

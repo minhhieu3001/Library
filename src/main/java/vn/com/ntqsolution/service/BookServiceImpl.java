@@ -28,7 +28,7 @@ public class BookServiceImpl implements BookService {
         if (optional.isPresent()) {
             return optional.get();
         }
-        throw new BookException("Not found Book", ResponseCode.BOOK_NOT_FOUND);
+        return null;
     }
 
     @Override
@@ -47,13 +47,19 @@ public class BookServiceImpl implements BookService {
     public Book editBook(BookRequest bookRequest) {
         Book book = new Book(bookRequest.getId(), bookRequest.getName(), bookRequest.getAuthor(),
                 bookRequest.getPublishDate(), bookRequest.getPrice());
-        bookRepository.save(book);
+        Optional<Book> option = bookRepository.findById(bookRequest.getId());
+        if(option.isPresent()) {
+            bookRepository.save(book);
         return book;
+        } else throw new BookException("BOOK NOT FOUND", ResponseCode.BOOK_NOT_FOUND);
     }
 
     @Override
     public void deleteBook(String id) {
-        bookRepository.deleteById(id);
+        Optional<Book> book = bookRepository.findById(id);
+        if(book.isPresent()) {
+            bookRepository.deleteById(id);
+        } else throw new BookException("BOOK BOT FOUND", ResponseCode.BOOK_NOT_FOUND);
     }
 
     @Override
