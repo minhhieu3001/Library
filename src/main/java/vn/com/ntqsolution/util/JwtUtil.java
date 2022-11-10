@@ -1,6 +1,7 @@
 package vn.com.ntqsolution.util;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import vn.com.ntqsolution.response.JwtResponse;
@@ -26,8 +27,12 @@ public class JwtUtil {
     }
 
     public static Boolean isTokenExpired(String token) {
-        Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
+        try {
+            Date expiration = getExpirationDateFromToken(token);
+            return expiration.before(new Date());
+        } catch(ExpiredJwtException exception) {
+            return true;
+        }
     }
 
 
