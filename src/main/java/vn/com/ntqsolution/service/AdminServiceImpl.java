@@ -33,14 +33,11 @@ public class AdminServiceImpl implements AdminService {
             throw new AdminException("Duplicate root account", ResponseCode.ACCOUNT_EXISTED);
         }
         Admin optional = adminRepository.findByEmail(newAdmin.getEmail());
-        Random random = new Random();
         if (optional != null) {
             throw new AdminException("Admin existed", ResponseCode.ACCOUNT_EXISTED);
         }
-        String originPassword = random.ints(48, 123).limit(15)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-        Admin admin = new Admin(newAdmin.getId(), newAdmin.getUsername(), bCryptPasswordEncoder.encode(originPassword),
+
+        Admin admin = new Admin(newAdmin.getId(), newAdmin.getUsername(), bCryptPasswordEncoder.encode(newAdmin.getPassword()),
                 newAdmin.getEmail(), newAdmin.getRole());
         adminRepository.save(admin);
         return admin;
